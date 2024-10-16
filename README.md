@@ -9,5 +9,6 @@
 
 ## Documentation
 https://www.django-rest-framework.org/
+
 https://docs.djangoproject.com/en/5.1/
 
