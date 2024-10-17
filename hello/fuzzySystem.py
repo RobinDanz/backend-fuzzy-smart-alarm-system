@@ -100,14 +100,13 @@ alarm_ctrl = ctrl.ControlSystem(rules=rules)
 alarm_sim = ctrl.ControlSystemSimulation(alarm_ctrl)
 
 def set_alarm_settings(data):
-    
     # Simulate the alarm system with some example inputs
     
-    alarm_sim.input['sleep_quality'] = 6  # average sleep quality
-    alarm_sim.input['schedule_importance'] = 8  # high importance
-    alarm_sim.input['mood'] = 2  # stressed mood
-    alarm_sim.input['weather'] = 5  # average/bad weather
-    alarm_sim.input['preferred_wake_method'] = 7  # dynamic wakeup method
+    alarm_sim.input['sleep_quality'] = data['sleep_quality']  # average sleep quality
+    alarm_sim.input['schedule_importance'] = data['schedule_importance']  # high importance
+    alarm_sim.input['mood'] = data['mood']  # stressed mood
+    alarm_sim.input['weather'] = data['weather']  # average/bad weather
+    alarm_sim.input['preferred_wake_method'] = data['preferred_wake_method']  # dynamic wakeup method
     
     alarm_sim.compute()
     
