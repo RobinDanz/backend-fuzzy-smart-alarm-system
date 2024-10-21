@@ -4,9 +4,24 @@ from skfuzzy import control as ctrl
 
 # Define fuzzy variables (Antecedents)
 sleep_quality = ctrl.Antecedent(np.arange(0, 11, 1), 'sleep_quality')
+# ideas for more variables that could impact sleep quality, TODO: implement rules
+# global_noise
+# coffein_intake
+# bed_quality
+
 schedule_importance = ctrl.Antecedent(np.arange(0, 11, 1), 'schedule_importance')
+# ideas for more variables that could impact schedule_importance, TODO: implement rules
+
+
 mood = ctrl.Antecedent(np.arange(0, 11, 1), 'mood')
+# ideas for more variables that could impact mood, TODO: implement rules
+# moon
+# general_life_quality
+
 weather = ctrl.Antecedent(np.arange(0, 11, 1), 'weather')
+# season
+# forecast
+
 preferred_wake_method = ctrl.Antecedent(np.arange(0, 11, 1), 'preferred_wake_method')
 
 # Define fuzzy output variable (Consequent)
