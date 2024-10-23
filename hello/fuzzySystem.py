@@ -4,10 +4,6 @@ from skfuzzy import control as ctrl
 
 # Define fuzzy variables (Antecedents)
 sleep_quality = ctrl.Antecedent(np.arange(0, 11, 1), 'sleep_quality')
-# ideas for more variables that could impact sleep quality, TODO: implement rules
-# global_noise
-# coffein_intake
-# bed_quality
 
 schedule_importance = ctrl.Antecedent(np.arange(0, 11, 1), 'schedule_importance')
 # ideas for more variables that could impact schedule_importance, TODO: implement rules
@@ -62,6 +58,7 @@ wake_time_adjustment['no_change'] = fuzz.trimf(wake_time_adjustment.universe, [-
 wake_time_adjustment['advance'] = fuzz.trimf(wake_time_adjustment.universe, [0, 15, 30])
 
 # Define the rules for wake time adjustment based on different inputs
+
 
 rules = []
 

@@ -6,11 +6,20 @@ from rest_framework import status
 from .models import Alarm_Settings
 from .serializer import AlarmSerializer
 from .fuzzySystem import set_alarm_settings
+from hello.fuzzy_systems import sleep_quality
 
 
 class HelloWorldView(APIView):
 
     def get(self, request, format=None):
+        data = {}
+        data['ambiant_noise'] = 0
+        data['bed_quality'] = 5
+        data['stress_level'] = 0
+
+        sleep_quality.process_sleep_quality(data)
+
+
         return Response({'hello': 'world'})
 
 
