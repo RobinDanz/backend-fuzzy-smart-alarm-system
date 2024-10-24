@@ -34,13 +34,15 @@ class HelloWorldView(APIView):
         return Response({'hello': 'world'})
 
     def get(self, request, format=None):
-        # Prepare input data for schedule_importance
+        # Prepare input data for schedule_importance (meeting_time and urgent_tasks)
         data_schedule_importance = {}
-        data_schedule_importance['schedule_importance'] = 8  # Example value, you can change this
+        data_schedule_importance['meeting_time'] = 6  # Example value, you can change this
+        data_schedule_importance['urgent_tasks'] = 5  # Example value, you can change this
 
-        # Prepare input data for preferred_wake_method
+        # Prepare input data for preferred_wake_method (sleep_quality and morning_energy)
         data_preferred_wake_method = {}
-        data_preferred_wake_method['preferred_wake_method'] = 7  # Example value, you can change this
+        data_preferred_wake_method['sleep_quality'] = 7  # Example value, you can change this
+        data_preferred_wake_method['morning_energy'] = 8  # Example value, you can change this
 
         # Process the fuzzy logic for both variables
         schedule_importance.simulate_schedule_importance(data_schedule_importance)

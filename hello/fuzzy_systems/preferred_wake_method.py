@@ -4,42 +4,33 @@ from skfuzzy import control as ctrl
 
 # Define fuzzy variables for preferred_wake_method
 sleep_quality = ctrl.Antecedent(np.arange(0, 11, 1), 'sleep_quality')
-mood = ctrl.Antecedent(np.arange(0, 11, 1), 'mood')
-weather = ctrl.Antecedent(np.arange(0, 11, 1), 'weather')
-preferred_wake_method = ctrl.Antecedent(np.arange(0, 11, 1), 'preferred_wake_method')
+morning_energy = ctrl.Antecedent(np.arange(0, 11, 1), 'morning_energy')
 
 # Define fuzzy output variable for preferred_wake_method
 wake_time_adjustment = ctrl.Consequent(np.arange(-30, 31, 1), 'wake_time_adjustment')
 
-# Membership functions for input variables
-sleep_quality['poor'] = fuzz.trimf(sleep_quality.universe, [0, 0, 5])
-sleep_quality['average'] = fuzz.trimf(sleep_quality.universe, [3, 5, 7])
-sleep_quality['good'] = fuzz.trimf(sleep_quality.universe, [5, 10, 10])
+# Membership functions for sleep_quality
+sleep_quality['very_poor'] = fuzz.trimf(sleep_quality.universe, [0, 0, 3])
+sleep_quality['average'] = fuzz.trimf(sleep_quality.universe, [2, 5, 7])
+sleep_quality['excellent'] = fuzz.trimf(sleep_quality.universe, [6, 10, 10])
 
-mood['stressed'] = fuzz.trimf(mood.universe, [0, 0, 5])
-mood['neutral'] = fuzz.trimf(mood.universe, [3, 5, 7])
-mood['relaxed'] = fuzz.trimf(mood.universe, [5, 10, 10])
+# Membership functions for morning_energy
+morning_energy['very_low'] = fuzz.trimf(morning_energy.universe, [0, 0, 3])
+morning_energy['moderate'] = fuzz.trimf(morning_energy.universe, [2, 5, 7])
+morning_energy['very_high'] = fuzz.trimf(morning_energy.universe, [6, 10, 10])
 
-weather['bad'] = fuzz.trimf(weather.universe, [0, 0, 5])
-weather['average'] = fuzz.trimf(weather.universe, [3, 5, 7])
-weather['good'] = fuzz.trimf(weather.universe, [5, 10, 10])
-
-preferred_wake_method['gentle'] = fuzz.trimf(preferred_wake_method.universe, [0, 0, 5])
-preferred_wake_method['moderate'] = fuzz.trimf(preferred_wake_method.universe, [3, 5, 7])
-preferred_wake_method['dynamic'] = fuzz.trimf(preferred_wake_method.universe, [5, 10, 10])
-
-# Membership functions for output variable
+# Membership functions for wake_time_adjustment (output)
 wake_time_adjustment['delay'] = fuzz.trimf(wake_time_adjustment.universe, [-30, -15, 0])
 wake_time_adjustment['no_change'] = fuzz.trimf(wake_time_adjustment.universe, [-5, 0, 5])
 wake_time_adjustment['advance'] = fuzz.trimf(wake_time_adjustment.universe, [0, 15, 30])
 
-# Define rules for preferred_wake_method (5 rules)
+# Define rules for preferred_wake_method
 rules_preferred_wake_method = [
-    ctrl.Rule(preferred_wake_method['gentle'] & sleep_quality['good'], wake_time_adjustment['advance']),
-    ctrl.Rule(preferred_wake_method['gentle'] & sleep_quality['poor'], wake_time_adjustment['no_change']),
-    ctrl.Rule(preferred_wake_method['moderate'] & mood['neutral'], wake_time_adjustment['no_change']),
-    ctrl.Rule(preferred_wake_method['dynamic'] & weather['good'], wake_time_adjustment['advance']),
-    ctrl.Rule(preferred_wake_method['dynamic'] & mood['stressed'], wake_time_adjustment['delay'])
+    ctrl.Rule(sleep_quality['very_poor'] & morning_energy['very_low'], wake_time_adjustment['delay']),
+    ctrl.Rule(sleep_quality['average'] & morning_energy['moderate'], wake_time_adjustment['no_change']),
+    ctrl.Rule(sleep_quality['excellent'] & morning_energy['very_high'], wake_time_adjustment['advance']),
+    ctrl.Rule(sleep_quality['very_poor'] & morning_energy['very_high'], wake_time_adjustment['no_change']),
+    ctrl.Rule(sleep_quality['excellent'] & morning_energy['very_low'], wake_time_adjustment['advance'])
 ]
 
 # Create control system and simulation for preferred_wake_method
