@@ -7,6 +7,7 @@ sleep_quality = ctrl.Antecedent(np.arange(0, 11, 1), 'sleep_quality')
 
 schedule_importance = ctrl.Antecedent(np.arange(0, 11, 1), 'schedule_importance')
 # ideas for more variables that could impact schedule_importance, TODO: implement rules
+# wake_time_adjustment
 
 mood = ctrl.Antecedent(np.arange(0, 11, 1), 'mood')
 # ideas for more variables that could impact mood, TODO: implement rules
@@ -18,6 +19,7 @@ weather = ctrl.Antecedent(np.arange(0, 11, 1), 'weather')
 # forecast
 
 preferred_wake_method = ctrl.Antecedent(np.arange(0, 11, 1), 'preferred_wake_method')
+# wake_time_adjustment
 
 # Define fuzzy output variable (Consequent)
 wake_time_adjustment = ctrl.Consequent(np.arange(-30, 31, 1), 'wake_time_adjustment')

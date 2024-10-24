@@ -3,6 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+
+from .fuzzy_systems.preferred_wake_method import wake_sim_preferred_wake, preferred_wake_method
+from .fuzzy_systems.schedule_importance import wake_sim_schedule, schedule_importance
 from .models import Alarm_Settings
 from .serializer import AlarmSerializer
 from .fuzzySystem import set_alarm_settings
@@ -29,6 +32,25 @@ class HelloWorldView(APIView):
 
 
         return Response({'hello': 'world'})
+
+    def get(self, request, format=None):
+        # Prepare input data for schedule_importance
+        data_schedule_importance = {}
+        data_schedule_importance['schedule_importance'] = 8  # Example value, you can change this
+
+        # Prepare input data for preferred_wake_method
+        data_preferred_wake_method = {}
+        data_preferred_wake_method['preferred_wake_method'] = 7  # Example value, you can change this
+
+        # Process the fuzzy logic for both variables
+        schedule_importance.simulate_schedule_importance(data_schedule_importance)
+        preferred_wake_method.simulate_wake_method(data_preferred_wake_method)
+
+        # Return the processed response
+        return Response({
+            'schedule_importance_result': schedule_importance.simulate_schedule_importance(data_schedule_importance),
+            'preferred_wake_method_result': preferred_wake_method.simulate_wake_method(data_preferred_wake_method)
+        })
 
 
 @api_view(['POST'])
