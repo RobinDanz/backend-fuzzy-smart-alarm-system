@@ -19,8 +19,8 @@ class HelloWorldView(APIView):
         data_sleep_quality['stress_level'] = 0
 
         data_fatigue_level = {}
-        data_fatigue_level['last_night_sleep'] = 0
-        data_fatigue_level['sleep_dept'] = 10
+        data_fatigue_level['last_night_sleep'] = 5
+        data_fatigue_level['sleep_dept'] = 5
 
         fatigue_level.process_fatigue_level(data_fatigue_level)
 

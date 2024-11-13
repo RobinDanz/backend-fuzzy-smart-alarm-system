@@ -2,14 +2,14 @@ import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
-last_night_sleep = ctrl.Antecedent(np.arange(0, 11, 1), 'last_night_sleep')
+last_night_sleep = ctrl.Antecedent(np.arange(0, 11, 0.5), 'last_night_sleep')
 sleep_dept = ctrl.Antecedent(np.arange(0, 11, 1), 'sleep_dept')
 
 fatigue_level_output = ctrl.Consequent(np.arange(0, 11, 1), 'fatigue_level_output')
 
-last_night_sleep['low'] = fuzz.trimf(last_night_sleep.universe, [0, 0, 5])
-last_night_sleep['average'] = fuzz.trimf(last_night_sleep.universe, [3, 5, 7])
-last_night_sleep['high'] = fuzz.trimf(last_night_sleep.universe, [5, 10, 10])
+last_night_sleep['low'] = fuzz.trimf(last_night_sleep.universe, [0, 0, 4])
+last_night_sleep['average'] = fuzz.trimf(last_night_sleep.universe, [4, 5.5, 8])
+last_night_sleep['high'] = fuzz.trimf(last_night_sleep.universe, [8, 10, 10])
 
 sleep_dept['low'] = fuzz.trimf(sleep_dept.universe, [0, 0, 5])
 sleep_dept['average'] = fuzz.trimf(sleep_dept.universe, [3, 5, 7])
