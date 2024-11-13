@@ -7,6 +7,8 @@ sleep_quality = ctrl.Antecedent(np.arange(0, 11, 1), 'sleep_quality')
 
 schedule_importance = ctrl.Antecedent(np.arange(0, 11, 1), 'schedule_importance')
 # ideas for more variables that could impact schedule_importance, TODO: implement rules
+# meeting_time
+# urgent_tasks
 
 mood = ctrl.Antecedent(np.arange(0, 11, 1), 'mood')
 # ideas for more variables that could impact mood, TODO: implement rules
@@ -18,6 +20,8 @@ weather = ctrl.Antecedent(np.arange(0, 11, 1), 'weather')
 # forecast
 
 preferred_wake_method = ctrl.Antecedent(np.arange(0, 11, 1), 'preferred_wake_method')
+# sleep_quality
+# morning_energy
 
 # Define fuzzy output variable (Consequent)
 wake_time_adjustment = ctrl.Consequent(np.arange(-30, 31, 1), 'wake_time_adjustment')
@@ -112,11 +116,11 @@ alarm_sim = ctrl.ControlSystemSimulation(alarm_ctrl)
 def set_alarm_settings(data):
     # Simulate the alarm system with some example inputs
     
-    alarm_sim.input['sleep_quality'] = data['sleep_quality']  # average sleep quality
-    alarm_sim.input['schedule_importance'] = data['schedule_importance']  # high importance
-    alarm_sim.input['mood'] = data['mood']  # stressed mood
-    alarm_sim.input['weather'] = data['weather']  # average/bad weather
-    alarm_sim.input['preferred_wake_method'] = data['preferred_wake_method']  # dynamic wakeup method
+    alarm_sim.input['sleep_quality'] = data['sleep_quality']  
+    alarm_sim.input['schedule_importance'] = data['schedule_importance'] 
+    alarm_sim.input['mood'] = data['mood']  
+    alarm_sim.input['weather'] = data['weather']  
+    alarm_sim.input['preferred_wake_method'] = data['preferred_wake_method']  
     
     alarm_sim.compute()
     
