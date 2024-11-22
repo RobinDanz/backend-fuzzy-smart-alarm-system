@@ -11,3 +11,11 @@ class Alarm_Settings(models.Model):
     
     def __str__(self):
         return self.message
+    
+class Static_Settings(models.Model):
+    age = models.IntegerField(null=True)
+    bed_quality= models.IntegerField(null=True)
+    ambient_noise = models.IntegerField(null=True)
+
+    def __str__(self):
+        return self.message
