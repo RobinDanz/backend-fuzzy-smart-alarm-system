@@ -13,7 +13,6 @@ from hello.fuzzy_systems import fatigue_level
 
 
 class HelloWorldView(APIView):
-
     def get(self, request, format=None):
         data_sleep_quality = {}
         data_sleep_quality['ambiant_noise'] = 0
