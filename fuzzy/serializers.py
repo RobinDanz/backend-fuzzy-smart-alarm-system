@@ -34,3 +34,10 @@ class AlarmSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = AlarmSettings
         fields = '__all__'
+        extra_kwargs = {
+            'fatigue_level_out': { 'read_only': True},
+            'schedule_importance_out': { 'read_only': True},
+            'sleep_quality_out': { 'read_only': True},
+            'weather_out': { 'read_only': True},
+            'wake_time_adjustment': { 'read_only': True},
+        }

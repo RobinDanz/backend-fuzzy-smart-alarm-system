@@ -1,4 +1,3 @@
-from typing import Iterable
 from django.db import models
 import uuid
 from datetime import datetime
@@ -27,7 +26,7 @@ class AlarmSettings(models.Model):
     bed_quality = models.IntegerField(null=True)
     ambient_noise = models.IntegerField(null=True)
 
-    user_id = models.UUIDField(default=uuid.uuid4, null=True)
+    user_id = models.UUIDField(default=uuid.uuid4)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     #Fuzzy systems output
