@@ -2,6 +2,19 @@ from rest_framework import serializers
 from fuzzy.models import AlarmSettings
 
 class AlarmSettingsSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        fields = self.context['request'].query_params.get('fields')
+
+        if fields:
+            fields = fields.split(',')
+            allowed = set(fields)
+            existing = set(self.fields.keys())
+
+            for field_name in existing-allowed:
+                self.fields.pop(field_name)
+
     def get_sleep_quality_data(self):
         return {
             'stress_level': self.data['stress_level'],
