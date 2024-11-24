@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from fuzzy.fuzzy_systems import fatigue_level_fuzz, schedule_importance_fuzz, global_system, preferred_wake_method_fuzz, sleep_quality_fuzz
-from fuzzy.serializers import AlarmSerializer
+from fuzzy.serializers import AlarmSettingsSerializer
 
 class FuzzyView(APIView):
     def get(self, request, format=None):
@@ -41,10 +41,47 @@ class FuzzyView(APIView):
     
     def post(self, request, *args, **kwargs):
         data = request.data
-        serializer = AlarmSerializer(data=data)
+        serializer = AlarmSettingsSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             responseData = global_system.set_alarm_settings(serializer)
             return Response(responseData, status= status.HTTP_200_OK)
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
     
+
+from rest_framework import generics
+from fuzzy.models import AlarmSettings
+from django.shortcuts import get_object_or_404
+
+class AlarmSettingsList(generics.ListCreateAPIView):
+    # queryset = AlarmSettings.objects.all()
+    serializer_class = AlarmSettingsSerializer
+
+    def get_queryset(self):
+        queryset = AlarmSettings.objects.all()
+        user_id = self.request.query_params.get('user_id')
+
+        if user_id is not None:
+            queryset.filter(user_id=user_id)
+        
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+class AlarmSettingsDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = AlarmSettings.objects.all()
+    serializer_class = AlarmSettingsSerializer
+    lookup_fields = ['pk', 'user_id']
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        filter = {}
+
+        for field in self.lookup_fields:
+            if self.kwargs.get(field):
+                
+                filter[field] = self.kwargs[field]
+        obj = queryset.filter(**filter).order_by('-timestamp').first()
+
+        return obj

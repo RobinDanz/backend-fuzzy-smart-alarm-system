@@ -11,12 +11,12 @@ schedule_importance_output = ctrl.Consequent(np.arange(0, 11, 1), 'wake_time_adj
 
 # Membership functions for meeting_time
 meeting_time['none'] = fuzz.trapmf(meeting_time.universe, [0, 0, 30, 60])
-meeting_time['moderate'] = fuzz.trimf(meeting_time.universe, [60, 120, 180])
+meeting_time['moderate'] = fuzz.trimf(meeting_time.universe, [55, 120, 185])
 meeting_time['busy'] = fuzz.trapmf(meeting_time.universe, [180, 300, 480, 480])
 
 # Membership functions for urgent_tasks
 urgent_tasks['low'] = fuzz.trimf(urgent_tasks.universe, [0, 0, 3])
-urgent_tasks['some'] = fuzz.trimf(urgent_tasks.universe, [3, 4, 5])
+urgent_tasks['some'] = fuzz.trimf(urgent_tasks.universe, [2, 4, 6])
 urgent_tasks['a_lot'] = fuzz.trapmf(urgent_tasks.universe, [5, 8, 10, 10])
 
 # Membership functions for wake_time_adjustment (output)
@@ -49,8 +49,7 @@ def process_schedule_importance(data):
     schedule_importance_sim.input['urgent_tasks'] = data['urgent_tasks']
 
     schedule_importance_sim.compute()
-    print('Schedule importance fuzzy')
-    print(schedule_importance_sim.output['wake_time_adjustment'])
+    return schedule_importance_sim.output['wake_time_adjustment']
 
 
     

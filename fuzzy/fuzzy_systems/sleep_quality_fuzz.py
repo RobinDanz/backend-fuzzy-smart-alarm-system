@@ -73,6 +73,5 @@ def process_sleep_quality(data):
     sleep_quality_sim.input['bed_quality'] = data['bed_quality']
     sleep_quality_sim.input['stress_level'] = data['stress_level']
 
-    sleep_quality_sim.compute()
-    print('Sleep quality fuzzy')
-    print(sleep_quality_sim.output['sleep_quality_output'])
+    sleep_quality_sim.compute()    
+    return sleep_quality_sim.output['sleep_quality_output']

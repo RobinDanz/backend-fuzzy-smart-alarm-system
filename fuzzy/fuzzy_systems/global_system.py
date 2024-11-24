@@ -115,26 +115,13 @@ rules.append(ctrl.Rule(mood['relaxed'] & preferred_wake_method['dynamic'], wake_
 alarm_ctrl = ctrl.ControlSystem(rules=rules)
 alarm_sim = ctrl.ControlSystemSimulation(alarm_ctrl)
 
-def set_alarm_settings(serializer):
-
-    # Simulate the alarm system with some example inputs
-
-    sleep_qual_data = serializer.get_sleep_quality_data()
-
-    sleep_quality_out = sleep_quality_fuzz.process_sleep_quality(sleep_qual_data)
-    # schedule_importance_out = schedule_importance_fuzz.process_schedule_importance(serializer.get_schedule_importance_data())
-
-    mood = 5
-    weather = 4
-    preferred_wake_method = 2
-    schedule_importance_out = 4
-    
-    alarm_sim.input['sleep_quality'] = sleep_quality_out
-    alarm_sim.input['schedule_importance'] = schedule_importance_out
-    alarm_sim.input['mood'] = mood 
-    alarm_sim.input['weather'] = weather 
-    alarm_sim.input['preferred_wake_method'] = preferred_wake_method
+def set_alarm_settings(data):
+    alarm_sim.input['sleep_quality'] = data['sleep_quality']
+    alarm_sim.input['schedule_importance'] = data['schedule_importance']
+    alarm_sim.input['mood'] = data['mood'] 
+    alarm_sim.input['weather'] = data['weather'] 
+    alarm_sim.input['preferred_wake_method'] = data['preferred_wake_method']
     
     alarm_sim.compute()
     
-    return dict({'output':alarm_sim.output['wake_time_adjustment']})
+    return alarm_sim.output['wake_time_adjustment']

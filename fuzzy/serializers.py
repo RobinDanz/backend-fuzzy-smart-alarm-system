@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from fuzzy.models import AlarmSettings
 
-class AlarmSerializer(serializers.ModelSerializer):
+class AlarmSettingsSerializer(serializers.ModelSerializer):
     def get_sleep_quality_data(self):
         return {
             'stress_level': self.data['stress_level'],

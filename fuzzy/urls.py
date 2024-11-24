@@ -5,6 +5,7 @@ from fuzzy import views
 
 
 urlpatterns = [
-    path('', views.FuzzyView.as_view()),
-    # path('alarm/',set_alarm_values,name='set_alarm_values'),
+    path('fuzzy/', views.AlarmSettingsList.as_view()),
+    path('fuzzy/<int:pk>/', views.AlarmSettingsDetail.as_view()),
+    path('fuzzy/<uuid:user_id>/', views.AlarmSettingsDetail.as_view()),  
 ]
