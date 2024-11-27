@@ -64,16 +64,20 @@ rules = [
 weather_ctrl = ctrl.ControlSystem(rules)
 weather_sim = ctrl.ControlSystemSimulation(weather_ctrl)
 
-# Input example values for evaluation
-weather_sim.input['wind_speed'] = 20  # Breezy
-weather_sim.input['temperature'] = 35 # Moderate
-weather_sim.input['humidity'] = 50  # Normal
 
-# Compute the result
-weather_sim.compute()
 
-# Output result
-if 'weather' in weather_sim.output:
-    print(f"Weather Evaluation for Sleep: {weather_sim.output['weather']:.2f}")
-else:
-    print("Error: Weather output not computed.")
+# # Output result
+# if 'weather' in weather_sim.output:
+#     print(f"Weather Evaluation for Sleep: {weather_sim.output['weather']:.2f}")
+# else:
+#     print("Error: Weather output not computed.")
+
+
+def process_weather(data):
+    weather_sim.input['wind_speed'] = data['wind_speed']
+    weather_sim.input['temperature'] = data['temperature']
+    weather_sim.input['humidity'] = data['humidity']
+
+    weather_sim.compute()
+
+    return weather_sim.output['weather']
