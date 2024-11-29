@@ -51,20 +51,10 @@ class FuzzyView(APIView):
 
 from rest_framework import generics
 from fuzzy.models import AlarmSettings
-from django.shortcuts import get_object_or_404
 
 class AlarmSettingsList(generics.ListCreateAPIView):
-    # queryset = AlarmSettings.objects.all()
+    queryset = AlarmSettings.objects.all()
     serializer_class = AlarmSettingsSerializer
-
-    def get_queryset(self):
-        queryset = AlarmSettings.objects.all()
-        user_id = self.request.query_params.get('user_id')
-
-        if user_id is not None:
-            queryset.filter(user_id=user_id)
-        
-        return queryset
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
@@ -72,16 +62,3 @@ class AlarmSettingsList(generics.ListCreateAPIView):
 class AlarmSettingsDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = AlarmSettings.objects.all()
     serializer_class = AlarmSettingsSerializer
-    lookup_fields = ['pk', 'user_id']
-
-    def get_object(self):
-        queryset = self.get_queryset()
-        filter = {}
-
-        for field in self.lookup_fields:
-            if self.kwargs.get(field):
-                
-                filter[field] = self.kwargs[field]
-        obj = queryset.filter(**filter).order_by('-timestamp').first()
-
-        return obj

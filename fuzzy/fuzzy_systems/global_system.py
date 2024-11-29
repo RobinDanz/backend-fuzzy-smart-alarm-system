@@ -6,24 +6,11 @@ from fuzzy.fuzzy_systems import fatigue_level_fuzz, schedule_importance_fuzz, gl
 
 # Define fuzzy variables (Antecedents)
 sleep_quality = ctrl.Antecedent(np.arange(0, 11, 1), 'sleep_quality')
-
 schedule_importance = ctrl.Antecedent(np.arange(0, 11, 1), 'schedule_importance')
-# ideas for more variables that could impact schedule_importance, TODO: implement rules
-# meeting_time
-# urgent_tasks
-
 mood = ctrl.Antecedent(np.arange(0, 11, 1), 'mood')
-# ideas for more variables that could impact mood, TODO: implement rules
-# moon
-# general_life_quality
-
 weather = ctrl.Antecedent(np.arange(0, 11, 1), 'weather')
-# season
-# forecast
-
 preferred_wake_method = ctrl.Antecedent(np.arange(0, 11, 1), 'preferred_wake_method')
-# sleep_quality
-# morning_energy
+fatigue_level = ctrl.Antecedent(np.arange(0, 11, 1), 'fatigue_level')
 
 # Define fuzzy output variable (Consequent)
 wake_time_adjustment = ctrl.Consequent(np.arange(-30, 31, 1), 'wake_time_adjustment')
@@ -54,6 +41,10 @@ weather['good'] = fuzz.trimf(weather.universe, [5, 10, 10])
 preferred_wake_method['gentle'] = fuzz.trimf(preferred_wake_method.universe, [0, 0, 5])
 preferred_wake_method['moderate'] = fuzz.trimf(preferred_wake_method.universe, [3, 5, 7])
 preferred_wake_method['dynamic'] = fuzz.trimf(preferred_wake_method.universe, [5, 10, 10])
+
+fatigue_level['low'] = fuzz.trimf(fatigue_level.universe, [0, 0, 5])
+fatigue_level['average'] = fuzz.trimf(fatigue_level.universe, [3, 5, 7])
+fatigue_level['high'] = fuzz.trimf(fatigue_level.universe, [5, 10, 10])
 
 # Membership functions for output variable
 
@@ -111,6 +102,31 @@ rules.append(ctrl.Rule(preferred_wake_method['dynamic'] & weather['bad'], wake_t
 rules.append(ctrl.Rule(mood['stressed'] & preferred_wake_method['gentle'], wake_time_adjustment['delay']))
 rules.append(ctrl.Rule(mood['relaxed'] & preferred_wake_method['dynamic'], wake_time_adjustment['advance']))
 
+# Add fatigue level rules
+rules.append(ctrl.Rule(fatigue_level['low'] & schedule_importance['low'], wake_time_adjustment['no_change']))
+rules.append(ctrl.Rule(fatigue_level['low'] & schedule_importance['medium'], wake_time_adjustment['no_change']))
+rules.append(ctrl.Rule(fatigue_level['low'] & schedule_importance['high'], wake_time_adjustment['advance']))
+
+rules.append(ctrl.Rule(fatigue_level['average'] & schedule_importance['low'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(fatigue_level['average'] & schedule_importance['medium'], wake_time_adjustment['no_change']))
+rules.append(ctrl.Rule(fatigue_level['average'] & schedule_importance['high'], wake_time_adjustment['no_change']))
+
+rules.append(ctrl.Rule(fatigue_level['high'] & schedule_importance['low'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(fatigue_level['high'] & schedule_importance['medium'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(fatigue_level['high'] & schedule_importance['high'], wake_time_adjustment['no_change']))
+
+rules.append(ctrl.Rule(fatigue_level['low'] & sleep_quality['poor'], wake_time_adjustment['no_change']))
+rules.append(ctrl.Rule(fatigue_level['low'] & sleep_quality['average'], wake_time_adjustment['no_change']))
+rules.append(ctrl.Rule(fatigue_level['low'] & sleep_quality['good'], wake_time_adjustment['advance']))
+
+rules.append(ctrl.Rule(fatigue_level['average'] & sleep_quality['poor'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(fatigue_level['average'] & sleep_quality['average'], wake_time_adjustment['no_change']))
+rules.append(ctrl.Rule(fatigue_level['average'] & sleep_quality['good'], wake_time_adjustment['no_change']))
+
+rules.append(ctrl.Rule(fatigue_level['high'] & sleep_quality['poor'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(fatigue_level['high'] & sleep_quality['average'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(fatigue_level['high'] & sleep_quality['good'], wake_time_adjustment['delay']))
+
 # Create a control system and simulation
 alarm_ctrl = ctrl.ControlSystem(rules=rules)
 alarm_sim = ctrl.ControlSystemSimulation(alarm_ctrl)
@@ -120,8 +136,9 @@ def set_alarm_settings(data):
     alarm_sim.input['schedule_importance'] = data['schedule_importance']
     alarm_sim.input['mood'] = data['mood'] 
     alarm_sim.input['weather'] = data['weather'] 
-    alarm_sim.input['preferred_wake_method'] = data['preferred_wake_method']
+    alarm_sim.input['fatigue_level'] = data['fatigue_level']
+    alarm_sim.input['preferred_wake_method'] = 0
     
     alarm_sim.compute()
-    
-    return alarm_sim.output['wake_time_adjustment']
+    ret  = alarm_sim.output['wake_time_adjustment']
+    return ret

@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from fuzzy.models import AlarmSettings
+from fuzzy.models import AlarmSettings, FuzzyOuput
+
+
+class FuzzyOutputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FuzzyOuput
+        fields = '__all__'
+
 
 class AlarmSettingsSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
@@ -14,6 +21,8 @@ class AlarmSettingsSerializer(serializers.ModelSerializer):
 
             for field_name in existing-allowed:
                 self.fields.pop(field_name)
+
+    fuzzy_outputs = FuzzyOutputSerializer(many=True, read_only=True)
 
     def get_sleep_quality_data(self):
         return {
@@ -48,11 +57,6 @@ class AlarmSettingsSerializer(serializers.ModelSerializer):
         model = AlarmSettings
         fields = '__all__'
         extra_kwargs = {
-            
-
-            'fatigue_level_out': { 'read_only': True},
-            'schedule_importance_out': { 'read_only': True},
-            'sleep_quality_out': { 'read_only': True},
-            'weather_out': { 'read_only': True},
-            'wake_time_adjustment': { 'read_only': True},
+            'user_id': {  'read_only': True },
+            'fuzzy_outputs': {  'read_only': True }
         }
