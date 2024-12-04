@@ -53,8 +53,18 @@ from rest_framework import generics
 from fuzzy.models import AlarmSettings
 
 class AlarmSettingsList(generics.ListCreateAPIView):
-    queryset = AlarmSettings.objects.all()
+
+
+    
     serializer_class = AlarmSettingsSerializer
+
+    def get_queryset(self):
+        queryset = AlarmSettings.objects.all()
+
+        user_id = self.request.query_params.get('user_id')
+        if user_id is not None:
+            queryset = queryset.filter(pk=user_id)
+        return queryset
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
