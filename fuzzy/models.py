@@ -15,7 +15,7 @@ class AlarmSettings(models.Model):
     temperature = models.IntegerField(null=True)
     humidity = models.IntegerField(null=True)
     last_night_sleep = models.IntegerField(null=True)
-    sleep_debt = models.IntegerField(null=True)
+    sleep_debt = models.IntegerField(default=0)
     meetings = models.IntegerField(null=True)
     urgent_tasks = models.IntegerField(null=True)
     physical_well_being = models.IntegerField(null=True)
@@ -27,6 +27,16 @@ class AlarmSettings(models.Model):
     ambient_noise = models.IntegerField(null=True)
     
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def calculate_sleep_debt(self):
+        optimal_sleep = 7
+        if self.user_age <= 12:
+            optimal_sleep = 10
+        
+        sleep_miss = self.last_night_sleep - optimal_sleep
+
+        return sleep_miss
+
 
     def static_settings_filled(self):
         ret = self.user_age is not None and self.preffered_wake_method is not None and self.bed_quality is not None and self.ambient_noise is not None
@@ -72,7 +82,13 @@ class AlarmSettings(models.Model):
             'urgent_tasks': self.urgent_tasks,
         }
 
+
+
     def save(self, **kwargs) -> None:
+
+        if self.user_age and self.last_night_sleep:
+            self.sleep_debt += self.calculate_sleep_debt()
+
         s = super().save(**kwargs)
 
         if self.static_settings_filled() and self.dynamic_settings_filled():
