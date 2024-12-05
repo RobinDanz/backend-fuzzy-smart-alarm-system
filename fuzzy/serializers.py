@@ -58,5 +58,6 @@ class AlarmSettingsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {
             'user_id': {  'read_only': True },
+            'sleep_debt': {'read_only': True},
             'fuzzy_outputs': {  'read_only': True }
         }
