@@ -11,8 +11,8 @@ from fuzzy.fuzzy_systems import (
 class AlarmSettings(models.Model):
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     stress_level = models.IntegerField(null=True)
-    wind_speed = models.IntegerField(null=True)
-    temperature = models.IntegerField(null=True)
+    wind_speed = models.FloatField(null=True)
+    temperature = models.FloatField(null=True)
     humidity = models.IntegerField(null=True)
     last_night_sleep = models.IntegerField(null=True)
     sleep_debt = models.IntegerField(null=True)
