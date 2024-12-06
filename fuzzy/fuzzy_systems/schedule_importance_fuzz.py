@@ -20,7 +20,7 @@ urgent_tasks['some'] = fuzz.trimf(urgent_tasks.universe, [2, 4, 6])
 urgent_tasks['a_lot'] = fuzz.trapmf(urgent_tasks.universe, [5, 8, 10, 10])
 
 # Membership functions for wake_time_adjustment (output)
-schedule_importance_output['low'] = fuzz.trimf(schedule_importance_output.universe, [0, 0, 2])
+schedule_importance_output['low'] = fuzz.trimf(schedule_importance_output.universe, [0, 0, 4])
 schedule_importance_output['average'] = fuzz.trimf(schedule_importance_output.universe, [3, 5, 8])
 schedule_importance_output['high'] = fuzz.trimf(schedule_importance_output.universe, [7, 10, 10])
 
