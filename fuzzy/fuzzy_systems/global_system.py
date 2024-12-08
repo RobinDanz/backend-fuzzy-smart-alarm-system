@@ -7,7 +7,7 @@ from fuzzy.fuzzy_systems import fatigue_level_fuzz, schedule_importance_fuzz, gl
 # Define fuzzy variables (Antecedents)
 sleep_quality = ctrl.Antecedent(np.arange(0, 11, 1), 'sleep_quality')
 schedule_importance = ctrl.Antecedent(np.arange(0, 11, 1), 'schedule_importance')
-mood = ctrl.Antecedent(np.arange(0, 11, 1), 'mood')
+physical_well_being = ctrl.Antecedent(np.arange(0, 11, 1), 'physical_well_being')
 weather = ctrl.Antecedent(np.arange(0, 11, 1), 'weather')
 fatigue_level = ctrl.Antecedent(np.arange(0, 11, 1), 'fatigue_level')
 
@@ -26,10 +26,10 @@ schedule_importance['low'] = fuzz.trimf(schedule_importance.universe, [0, 0, 5])
 schedule_importance['medium'] = fuzz.trimf(schedule_importance.universe, [3, 5, 7])
 schedule_importance['high'] = fuzz.trimf(schedule_importance.universe, [5, 10, 10])
 
-# Mood
-mood['stressed'] = fuzz.trimf(mood.universe, [0, 0, 5])
-mood['neutral'] = fuzz.trimf(mood.universe, [3, 5, 7])
-mood['relaxed'] = fuzz.trimf(mood.universe, [5, 10, 10])
+# physical_well_being
+physical_well_being['sick'] = fuzz.trimf(physical_well_being.universe, [0, 0, 5])
+physical_well_being['neutral'] = fuzz.trimf(physical_well_being.universe, [3, 5, 7])
+physical_well_being['healthy'] = fuzz.trimf(physical_well_being.universe, [5, 10, 10])
 
 # Weather
 weather['bad'] = fuzz.trimf(weather.universe, [0, 0, 5])
@@ -64,25 +64,25 @@ rules.append(ctrl.Rule(sleep_quality['good'] & schedule_importance['high'], wake
 rules.append(ctrl.Rule(sleep_quality['good'] & schedule_importance['medium'], wake_time_adjustment['no_change']))
 rules.append(ctrl.Rule(sleep_quality['good'] & schedule_importance['low'], wake_time_adjustment['no_change']))
 
-# Mood and schedule importance
-rules.append(ctrl.Rule(mood['stressed'] & schedule_importance['high'], wake_time_adjustment['no_change']))
-rules.append(ctrl.Rule(mood['stressed'] & schedule_importance['medium'], wake_time_adjustment['delay']))
-rules.append(ctrl.Rule(mood['relaxed'] & sleep_quality['good'], wake_time_adjustment['advance']))
-rules.append(ctrl.Rule(mood['relaxed'] & sleep_quality['poor'], wake_time_adjustment['delay']))
-rules.append(ctrl.Rule(mood['neutral'] & sleep_quality['average'], wake_time_adjustment['no_change']))
+# physical_well_being and schedule importance
+rules.append(ctrl.Rule(physical_well_being['sick'] & schedule_importance['high'], wake_time_adjustment['no_change']))
+rules.append(ctrl.Rule(physical_well_being['sick'] & schedule_importance['medium'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(physical_well_being['healthy'] & sleep_quality['good'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(physical_well_being['healthy'] & sleep_quality['poor'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(physical_well_being['neutral'] & sleep_quality['average'], wake_time_adjustment['no_change']))
 
-# Weather and mood/sleep quality
+# Weather and physical_well_being/sleep quality
 rules.append(ctrl.Rule(weather['bad'] & schedule_importance['high'], wake_time_adjustment['no_change']))
-rules.append(ctrl.Rule(weather['good'] & mood['relaxed'], wake_time_adjustment['advance']))
-rules.append(ctrl.Rule(weather['average'] & mood['stressed'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(weather['good'] & physical_well_being['healthy'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(weather['average'] & physical_well_being['sick'], wake_time_adjustment['delay']))
 rules.append(ctrl.Rule(weather['good'] & sleep_quality['good'], wake_time_adjustment['advance']))
 
 # Fallback or catch-all rules
-rules.append(ctrl.Rule(sleep_quality['poor'] | mood['neutral'], wake_time_adjustment['delay']))
-rules.append(ctrl.Rule(schedule_importance['low'] & mood['relaxed'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(sleep_quality['poor'] | physical_well_being['neutral'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(schedule_importance['low'] & physical_well_being['healthy'], wake_time_adjustment['delay']))
 
 # Optional default rule
-rules.append(ctrl.Rule(sleep_quality['poor'] | schedule_importance['low'] | mood['relaxed'], wake_time_adjustment['no_change']))
+rules.append(ctrl.Rule(sleep_quality['poor'] | schedule_importance['low'] | physical_well_being['healthy'], wake_time_adjustment['no_change']))
 
 # Add fatigue level rules
 rules.append(ctrl.Rule(fatigue_level['low'] & schedule_importance['low'], wake_time_adjustment['no_change']))
@@ -116,10 +116,9 @@ alarm_sim = ctrl.ControlSystemSimulation(alarm_ctrl)
 def set_alarm_settings(data):
     alarm_sim.input['sleep_quality'] = data['sleep_quality']
     alarm_sim.input['schedule_importance'] = data['schedule_importance']
-    alarm_sim.input['mood'] = data['mood'] 
+    alarm_sim.input['physical_well_being'] = data['physical_well_being'] 
     alarm_sim.input['weather'] = data['weather'] 
     alarm_sim.input['fatigue_level'] = data['fatigue_level']
-    # alarm_sim.input['preferred_wake_method'] = 0
     
     alarm_sim.compute()
     ret  = alarm_sim.output['wake_time_adjustment']

@@ -83,7 +83,6 @@ class AlarmSettings(models.Model):
         }
 
 
-
     def save(self, **kwargs) -> None:
 
         if self.user_age and self.last_night_sleep:
@@ -97,13 +96,12 @@ class AlarmSettings(models.Model):
             fatigue_level_out = fatigue_level_fuzz.process_fatigue_level(self.get_fatigue_level_data(), self.user_age)
             schedule_importance_out = schedule_importance_fuzz.process_schedule_importance(self.get_schedule_importance_data())
 
-            # wake_time_adjustment = global_system.set_alarm_settings(self.get_global_fuzzy_data())
-
             f = FuzzyOuput.objects.create(
                 fatigue_level_out=fatigue_level_out, 
                 sleep_quality_out=sleep_quality_out, 
                 weather_out=weather_out, 
                 schedule_importance_out=schedule_importance_out,
+                physical_well_being=self.physical_well_being,
                 wake_time_adjustment=0,
                 alarm_setting=self
             )
@@ -119,7 +117,8 @@ class FuzzyOuput(models.Model):
     schedule_importance_out = models.FloatField(null=True)
     sleep_quality_out = models.FloatField(null=True)
     weather_out = models.FloatField(null=True)
-    wake_time_adjustment = models.FloatField(null=True)  
+    physical_well_being = models.FloatField(null=True)
+    wake_time_adjustment = models.FloatField(null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     alarm_setting = models.ForeignKey(to=AlarmSettings, related_name='fuzzy_outputs', on_delete=models.CASCADE)
 
@@ -130,7 +129,7 @@ class FuzzyOuput(models.Model):
         return {
             'sleep_quality': self.sleep_quality_out,
             'schedule_importance': self.schedule_importance_out,
-            'mood': 5,
+            'physical_well_being': self.physical_well_being,
             'weather': self.weather_out,
             'fatigue_level': self.fatigue_level_out
         }
