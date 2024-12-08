@@ -43,9 +43,9 @@ fatigue_level['high'] = fuzz.trimf(fatigue_level.universe, [5, 10, 10])
 # Membership functions for output variable
 
 # Wake time adjustment
-wake_time_adjustment['delay'] = fuzz.trimf(wake_time_adjustment.universe, [-60, -30, 0])
+wake_time_adjustment['delay'] = fuzz.trimf(wake_time_adjustment.universe, [-60, -60, 0])
 wake_time_adjustment['no_change'] = fuzz.trimf(wake_time_adjustment.universe, [-15, 0, 15])
-wake_time_adjustment['advance'] = fuzz.trimf(wake_time_adjustment.universe, [0, 30, 60])
+wake_time_adjustment['advance'] = fuzz.trimf(wake_time_adjustment.universe, [0, 60, 60])
 
 # Define the rules for wake time adjustment based on different inputs
 
@@ -53,33 +53,33 @@ rules = []
 
 # Sleep quality & schedule importance
 rules.append(ctrl.Rule(sleep_quality['poor'] & schedule_importance['high'], wake_time_adjustment['no_change']))
-rules.append(ctrl.Rule(sleep_quality['poor'] & schedule_importance['medium'], wake_time_adjustment['delay']))
-rules.append(ctrl.Rule(sleep_quality['poor'] & schedule_importance['low'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(sleep_quality['poor'] & schedule_importance['medium'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(sleep_quality['poor'] & schedule_importance['low'], wake_time_adjustment['advance']))
 
 rules.append(ctrl.Rule(sleep_quality['average'] & schedule_importance['high'], wake_time_adjustment['no_change']))
 rules.append(ctrl.Rule(sleep_quality['average'] & schedule_importance['medium'], wake_time_adjustment['no_change']))
-rules.append(ctrl.Rule(sleep_quality['average'] & schedule_importance['low'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(sleep_quality['average'] & schedule_importance['low'], wake_time_adjustment['advance']))
 
-rules.append(ctrl.Rule(sleep_quality['good'] & schedule_importance['high'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(sleep_quality['good'] & schedule_importance['high'], wake_time_adjustment['delay']))
 rules.append(ctrl.Rule(sleep_quality['good'] & schedule_importance['medium'], wake_time_adjustment['no_change']))
 rules.append(ctrl.Rule(sleep_quality['good'] & schedule_importance['low'], wake_time_adjustment['no_change']))
 
 # physical_well_being and schedule importance
 rules.append(ctrl.Rule(physical_well_being['sick'] & schedule_importance['high'], wake_time_adjustment['no_change']))
-rules.append(ctrl.Rule(physical_well_being['sick'] & schedule_importance['medium'], wake_time_adjustment['delay']))
-rules.append(ctrl.Rule(physical_well_being['healthy'] & sleep_quality['good'], wake_time_adjustment['advance']))
-rules.append(ctrl.Rule(physical_well_being['healthy'] & sleep_quality['poor'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(physical_well_being['sick'] & schedule_importance['medium'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(physical_well_being['healthy'] & sleep_quality['good'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(physical_well_being['healthy'] & sleep_quality['poor'], wake_time_adjustment['advance']))
 rules.append(ctrl.Rule(physical_well_being['neutral'] & sleep_quality['average'], wake_time_adjustment['no_change']))
 
 # Weather and physical_well_being/sleep quality
 rules.append(ctrl.Rule(weather['bad'] & schedule_importance['high'], wake_time_adjustment['no_change']))
-rules.append(ctrl.Rule(weather['good'] & physical_well_being['healthy'], wake_time_adjustment['advance']))
-rules.append(ctrl.Rule(weather['average'] & physical_well_being['sick'], wake_time_adjustment['delay']))
-rules.append(ctrl.Rule(weather['good'] & sleep_quality['good'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(weather['good'] & physical_well_being['healthy'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(weather['average'] & physical_well_being['sick'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(weather['good'] & sleep_quality['good'], wake_time_adjustment['delay']))
 
 # Fallback or catch-all rules
-rules.append(ctrl.Rule(sleep_quality['poor'] | physical_well_being['neutral'], wake_time_adjustment['delay']))
-rules.append(ctrl.Rule(schedule_importance['low'] & physical_well_being['healthy'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(sleep_quality['poor'] | physical_well_being['neutral'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(schedule_importance['low'] & physical_well_being['healthy'], wake_time_adjustment['advance']))
 
 # Optional default rule
 rules.append(ctrl.Rule(sleep_quality['poor'] | schedule_importance['low'] | physical_well_being['healthy'], wake_time_adjustment['no_change']))
@@ -87,27 +87,27 @@ rules.append(ctrl.Rule(sleep_quality['poor'] | schedule_importance['low'] | phys
 # Add fatigue level rules
 rules.append(ctrl.Rule(fatigue_level['low'] & schedule_importance['low'], wake_time_adjustment['no_change']))
 rules.append(ctrl.Rule(fatigue_level['low'] & schedule_importance['medium'], wake_time_adjustment['no_change']))
-rules.append(ctrl.Rule(fatigue_level['low'] & schedule_importance['high'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(fatigue_level['low'] & schedule_importance['high'], wake_time_adjustment['delay']))
 
-rules.append(ctrl.Rule(fatigue_level['average'] & schedule_importance['low'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(fatigue_level['average'] & schedule_importance['low'], wake_time_adjustment['advance']))
 rules.append(ctrl.Rule(fatigue_level['average'] & schedule_importance['medium'], wake_time_adjustment['no_change']))
 rules.append(ctrl.Rule(fatigue_level['average'] & schedule_importance['high'], wake_time_adjustment['no_change']))
 
-rules.append(ctrl.Rule(fatigue_level['high'] & schedule_importance['low'], wake_time_adjustment['delay']))
-rules.append(ctrl.Rule(fatigue_level['high'] & schedule_importance['medium'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(fatigue_level['high'] & schedule_importance['low'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(fatigue_level['high'] & schedule_importance['medium'], wake_time_adjustment['advance']))
 rules.append(ctrl.Rule(fatigue_level['high'] & schedule_importance['high'], wake_time_adjustment['no_change']))
 
 rules.append(ctrl.Rule(fatigue_level['low'] & sleep_quality['poor'], wake_time_adjustment['no_change']))
 rules.append(ctrl.Rule(fatigue_level['low'] & sleep_quality['average'], wake_time_adjustment['no_change']))
-rules.append(ctrl.Rule(fatigue_level['low'] & sleep_quality['good'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(fatigue_level['low'] & sleep_quality['good'], wake_time_adjustment['delay']))
 
-rules.append(ctrl.Rule(fatigue_level['average'] & sleep_quality['poor'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(fatigue_level['average'] & sleep_quality['poor'], wake_time_adjustment['advance']))
 rules.append(ctrl.Rule(fatigue_level['average'] & sleep_quality['average'], wake_time_adjustment['no_change']))
 rules.append(ctrl.Rule(fatigue_level['average'] & sleep_quality['good'], wake_time_adjustment['no_change']))
 
-rules.append(ctrl.Rule(fatigue_level['high'] & sleep_quality['poor'], wake_time_adjustment['delay']))
-rules.append(ctrl.Rule(fatigue_level['high'] & sleep_quality['average'], wake_time_adjustment['delay']))
-rules.append(ctrl.Rule(fatigue_level['high'] & sleep_quality['good'], wake_time_adjustment['delay']))
+rules.append(ctrl.Rule(fatigue_level['high'] & sleep_quality['poor'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(fatigue_level['high'] & sleep_quality['average'], wake_time_adjustment['advance']))
+rules.append(ctrl.Rule(fatigue_level['high'] & sleep_quality['good'], wake_time_adjustment['advance']))
 
 # Create a control system and simulation
 alarm_ctrl = ctrl.ControlSystem(rules=rules)

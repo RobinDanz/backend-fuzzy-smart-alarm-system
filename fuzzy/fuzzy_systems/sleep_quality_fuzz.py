@@ -20,9 +20,9 @@ stress_level['low'] = fuzz.trimf(stress_level.universe, [0, 0, 3])
 stress_level['average'] = fuzz.trapmf(stress_level.universe, [2, 4, 6, 8])
 stress_level['high'] = fuzz.trimf(stress_level.universe, [7, 10, 10])
 
-sleep_quality_output['poor'] = fuzz.trimf(sleep_quality_output.universe, [0, 2, 5])
+sleep_quality_output['poor'] = fuzz.trimf(sleep_quality_output.universe, [0, 0, 5])
 sleep_quality_output['average'] = fuzz.trimf(sleep_quality_output.universe, [3, 5, 8])
-sleep_quality_output['good'] = fuzz.trimf(sleep_quality_output.universe, [5, 8, 10])
+sleep_quality_output['good'] = fuzz.trimf(sleep_quality_output.universe, [5, 10, 10])
 
 rules = []
 
