@@ -22,7 +22,7 @@ sleep_debt['high'] = fuzz.trapmf(sleep_debt.universe, [3, 15, 30, 30])
 
 fatigue_level_output['low'] = fuzz.trimf(fatigue_level_output.universe, [0, 1, 3])
 fatigue_level_output['average'] = fuzz.trimf(fatigue_level_output.universe, [2, 5, 8])
-fatigue_level_output['high'] = fuzz.trimf(fatigue_level_output.universe, [5, 8, 10])
+fatigue_level_output['high'] = fuzz.trimf(fatigue_level_output.universe, [5, 10, 10])
 
 rules = []
 
