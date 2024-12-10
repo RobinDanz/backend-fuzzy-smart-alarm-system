@@ -2,7 +2,7 @@ databases:
   - name: smartalarmdb
     plan: free
     databaseName: smart_alarm_db
-    user: postgres
+    user: smartalarm
 
 services:
   - type: web
