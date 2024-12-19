@@ -33,7 +33,7 @@ class AlarmSettings(models.Model):
         if self.user_age <= 12:
             optimal_sleep = 10
         
-        sleep_miss = self.last_night_sleep - optimal_sleep
+        sleep_miss =  optimal_sleep - self.last_night_sleep
 
         return sleep_miss
 
@@ -87,6 +87,9 @@ class AlarmSettings(models.Model):
 
         if self.user_age and self.last_night_sleep:
             self.sleep_debt += self.calculate_sleep_debt()
+
+        if self.sleep_debt < 0:
+            self.sleep_debt = 0
 
         s = super().save(**kwargs)
 
