@@ -29,8 +29,40 @@ weather['bad'] = fuzz.trimf(weather.universe, [0, 0, 40])
 weather['average'] = fuzz.trimf(weather.universe, [30, 50, 70])
 weather['good'] = fuzz.trimf(weather.universe, [60, 100, 100])
 
-# Define fuzzy rules
+# # Define fuzzy rules
+# rules = [
+#     ctrl.Rule(wind_speed['calm'] & temperature['cold'] & humidity['dry'], weather['average']),
+#     ctrl.Rule(wind_speed['calm'] & temperature['cold'] & humidity['normal'], weather['good']),
+#     ctrl.Rule(wind_speed['calm'] & temperature['cold'] & humidity['humid'], weather['average']),
+#     ctrl.Rule(wind_speed['calm'] & temperature['moderate'] & humidity['dry'], weather['good']),
+#     ctrl.Rule(wind_speed['calm'] & temperature['moderate'] & humidity['normal'], weather['good']),
+#     ctrl.Rule(wind_speed['calm'] & temperature['moderate'] & humidity['humid'], weather['average']),
+#     ctrl.Rule(wind_speed['calm'] & temperature['warm'] & humidity['dry'], weather['good']),
+#     ctrl.Rule(wind_speed['calm'] & temperature['warm'] & humidity['normal'], weather['average']),
+#     ctrl.Rule(wind_speed['calm'] & temperature['warm'] & humidity['humid'], weather['bad']),
+#     ctrl.Rule(wind_speed['breezy'] & temperature['cold'] & humidity['dry'], weather['average']),
+#     ctrl.Rule(wind_speed['breezy'] & temperature['cold'] & humidity['normal'], weather['average']),
+#     ctrl.Rule(wind_speed['breezy'] & temperature['cold'] & humidity['humid'], weather['bad']),
+#     ctrl.Rule(wind_speed['breezy'] & temperature['moderate'] & humidity['dry'], weather['good']),
+#     ctrl.Rule(wind_speed['breezy'] & temperature['moderate'] & humidity['normal'], weather['good']),
+#     ctrl.Rule(wind_speed['breezy'] & temperature['moderate'] & humidity['humid'], weather['average']),
+#     ctrl.Rule(wind_speed['breezy'] & temperature['warm'] & humidity['dry'], weather['average']),
+#     ctrl.Rule(wind_speed['breezy'] & temperature['warm'] & humidity['normal'], weather['average']),
+#     ctrl.Rule(wind_speed['breezy'] & temperature['warm'] & humidity['humid'], weather['bad']),
+#     ctrl.Rule(wind_speed['windy'] & temperature['cold'] & humidity['dry'], weather['bad']),
+#     ctrl.Rule(wind_speed['windy'] & temperature['cold'] & humidity['normal'], weather['bad']),
+#     ctrl.Rule(wind_speed['windy'] & temperature['cold'] & humidity['humid'], weather['bad']),
+#     ctrl.Rule(wind_speed['windy'] & temperature['moderate'] & humidity['dry'], weather['average']),
+#     ctrl.Rule(wind_speed['windy'] & temperature['moderate'] & humidity['normal'], weather['average']),
+#     ctrl.Rule(wind_speed['windy'] & temperature['moderate'] & humidity['humid'], weather['bad']),
+#     ctrl.Rule(wind_speed['windy'] & temperature['warm'] & humidity['dry'], weather['bad']),
+#     ctrl.Rule(wind_speed['windy'] & temperature['warm'] & humidity['normal'], weather['bad']),
+#     ctrl.Rule(wind_speed['windy'] & temperature['warm'] & humidity['humid'], weather['bad']),
+# ]
+
+# Updated rules for waking up earlier
 rules = [
+    # Calm wind
     ctrl.Rule(wind_speed['calm'] & temperature['cold'] & humidity['dry'], weather['average']),
     ctrl.Rule(wind_speed['calm'] & temperature['cold'] & humidity['normal'], weather['good']),
     ctrl.Rule(wind_speed['calm'] & temperature['cold'] & humidity['humid'], weather['average']),
@@ -40,6 +72,8 @@ rules = [
     ctrl.Rule(wind_speed['calm'] & temperature['warm'] & humidity['dry'], weather['good']),
     ctrl.Rule(wind_speed['calm'] & temperature['warm'] & humidity['normal'], weather['average']),
     ctrl.Rule(wind_speed['calm'] & temperature['warm'] & humidity['humid'], weather['bad']),
+
+    # Breezy wind
     ctrl.Rule(wind_speed['breezy'] & temperature['cold'] & humidity['dry'], weather['average']),
     ctrl.Rule(wind_speed['breezy'] & temperature['cold'] & humidity['normal'], weather['average']),
     ctrl.Rule(wind_speed['breezy'] & temperature['cold'] & humidity['humid'], weather['bad']),
@@ -49,6 +83,8 @@ rules = [
     ctrl.Rule(wind_speed['breezy'] & temperature['warm'] & humidity['dry'], weather['average']),
     ctrl.Rule(wind_speed['breezy'] & temperature['warm'] & humidity['normal'], weather['average']),
     ctrl.Rule(wind_speed['breezy'] & temperature['warm'] & humidity['humid'], weather['bad']),
+
+    # Windy wind
     ctrl.Rule(wind_speed['windy'] & temperature['cold'] & humidity['dry'], weather['bad']),
     ctrl.Rule(wind_speed['windy'] & temperature['cold'] & humidity['normal'], weather['bad']),
     ctrl.Rule(wind_speed['windy'] & temperature['cold'] & humidity['humid'], weather['bad']),
@@ -63,15 +99,6 @@ rules = [
 # Create control system
 weather_ctrl = ctrl.ControlSystem(rules)
 weather_sim = ctrl.ControlSystemSimulation(weather_ctrl)
-
-
-
-# # Output result
-# if 'weather' in weather_sim.output:
-#     print(f"Weather Evaluation for Sleep: {weather_sim.output['weather']:.2f}")
-# else:
-#     print("Error: Weather output not computed.")
-
 
 def process_weather(data):
     weather_sim.input['wind_speed'] = data['wind_speed']
